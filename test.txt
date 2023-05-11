@@ -1,0 +1,2 @@
+I'm happy to share the smart home project based on AVR Atmega32 MCU as a final project for AVR course held
+in Information Technology Institute (ITI)

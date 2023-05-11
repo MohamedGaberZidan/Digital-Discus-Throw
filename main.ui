@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>1311</width>
     <height>600</height>
    </rect>
   </property>
@@ -16,13 +16,44 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QListWidget" name="mohamed_list"/>
-    </item>
-    <item row="1" column="0">
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>Start Processing</string>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string/>
       </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QPushButton" name="start_session">
+           <property name="text">
+            <string>Start Session</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="stop_session">
+           <property name="text">
+            <string>Stop Session</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="start_getting">
+         <property name="text">
+          <string>Start Getting Data</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="start_processing">
+         <property name="text">
+          <string>Start Processing</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>

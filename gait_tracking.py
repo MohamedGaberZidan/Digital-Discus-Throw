@@ -246,5 +246,5 @@ def process():
                                     repeat=False)
 
         anim.save("animation.gif", writer=animation.PillowWriter(fps))
-
+ 
     pyplot.show()
