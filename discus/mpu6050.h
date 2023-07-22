@@ -20,4 +20,4 @@ Connection between ESP32 and MPU6050
 void mpu_init();
 void mpu_get_event();
 uint8_t Get_NVS_Data(String);
-void NVS_Save_DATA(float time_T , float Gyroscope_X,float Gyroscope_Y,float Gyroscope_Z, float Accelerometer_X, float Accelerometer_Y, float Accelerometer_Z);
+void NVS_Save_DATA(float time_T , double Gyroscope_X,double Gyroscope_Y,double Gyroscope_Z, double Accelerometer_X, double Accelerometer_Y, double Accelerometer_Z);

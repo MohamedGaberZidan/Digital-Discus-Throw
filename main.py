@@ -14,7 +14,7 @@ status_flag = False
 get_data_flag = False
 start_session_flag = False
 stop_session_flag = False
-
+lines=[]
 class Main(QMainWindow):
 
     def __init__(self):
@@ -29,7 +29,7 @@ class Main(QMainWindow):
         #     #mohamed_list is the id of the widget list object that identify it 
         #     #we can change it from qt designer
         #     self.mohamed_list.addItem(item)  
-        self.start_processing.clicked.connect(self.start_processing)
+        self.start_processing.clicked.connect(self.start_processing_pushed)
         self.start_getting.clicked.connect(self.start_getting_pushed)
         self.stop_session.clicked.connect(self.stop_session_pushed)
         self.start_session.clicked.connect(self.start_session_pushed)
@@ -37,30 +37,36 @@ class Main(QMainWindow):
     def start_processing_pushed(self):
         print("Button Clicked")
         global status_flag
+        
         status_flag = True
         self.show_processing()
 
     def start_getting_pushed(self):
         print("Button Clicked")
+        global get_data_flag
         global status_flag
         status_flag = True
-        self.show_processing()
+        get_data_flag = True
+
 
     def stop_session_pushed(self):
         print("Button Clicked")
+        global stop_session_flag
         global status_flag
+        stop_session_flag = True
         status_flag = True
-        self.show_processing()
 
     def start_session_pushed(self):
         print("Button Clicked")
         global status_flag
+        global start_session_flag
         status_flag = True
-        self.show_processing()
-
+        start_session_flag = True
     def show_processing(self):
-        self.pushButton.setText("Processing")
-        self.pushButton.setEnabled(False)
+        process()
+        # self.pushButton.setText("Processing")
+        # self.pushButton.setEnabled(False)
+
 
 
 
@@ -78,42 +84,55 @@ def start_app():
     app.exec_()
 
 def start_serial():
-    master = serial.Serial('COM10', 115200, timeout=1)
+    global start_session_flag
+    global stop_session_flag
+    global get_data_flag
+    global lines
+    master = serial.Serial('COM3', 115200, timeout=1)
     #getting data
     while True:
-        lines=[]
+
         append_data = False
         if master.inWaiting():
             line = master.readline()
             line=line.decode("utf-8", "replace")
             line = line.replace('\n','')
             line = line.strip()
+            print(line)
             if line == "END":
                 append_data = True
-            else:
+                
+            elif(len(line)>0  and line[0].isdigit()):
                 lines.append(line)
         ### write the data when device send all the data
-        if append_data:
-            lines  = (line.strip() for line in lines)
+        if append_data==True:
+            print("start edit the file")
             with open("test.csv","w", newline='') as f:
-                writer = csv.writer(f)
-                for lines in lines:
-                    decoded_bytes = lines.split(",")
+                print("we opened the file")
+                writer = csv.writer(f,quoting=csv.QUOTE_NONE,delimiter=" ")
+                for line in lines:
+                    decoded_bytes = line.replace(' ',',')
+                    decoded_bytes = decoded_bytes.split('*')
+                    print("saving data", decoded_bytes)
                     writer.writerow(decoded_bytes)
+                lines = []
 
 
         elif start_session_flag == True:
+            print("start session")
             master.write("Start".encode())
             start_session_flag = False
         elif stop_session_flag == True:
+            print("stop session")
             master.write("Stop".encode())
             stop_session_flag = False
         elif get_data_flag == True:
+            print("start getting data")
             master.write("Send".encode())
-            stop_session_flag = False
+            get_data_flag = False
 
 if __name__ == '__main__':
     t1 = threading.Thread(target=start_serial, args=())
    # starting thread 1
-    t1.start()
+    t1.start()  
     start_app()

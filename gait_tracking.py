@@ -8,7 +8,7 @@ import numpy
 
 # Import sensor data ("short_walk.csv" or "long_walk.csv")
 def process():
-    data = numpy.genfromtxt("short_walk.csv", delimiter=",", skip_header=1)
+    data = numpy.genfromtxt("test.csv", delimiter=",", skip_header=1)
 
     sample_rate = 400  # 400 Hz
 

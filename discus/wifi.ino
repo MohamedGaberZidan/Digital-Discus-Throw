@@ -13,11 +13,12 @@
 #include "wifi.h"
 #include "mpu6050.h"
 
-extern bool start_saving_data;
+extern volatile bool start_saving_data;
+bool volatile start_sending_data = false;
 // Structure example to send data
 // Must match the receiver structure
 typedef struct struct_message {
-  char a[32]; // will be used for sending the data
+  char a[55]; // will be used for sending the data
   bool send_data; // will be used for requesting the data
   bool save_data; // will be used for requesting stating saving the data and stopping it
 } struct_message;
@@ -32,19 +33,21 @@ bool incoming_cmd = false;
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status);
 
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
-  Serial.print("\r\nLast Packet Send Status:\t");
-  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+  //Serial.print("\r\nLast Packet Send Status:\t");
+  //Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
 }
  void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&myData, incomingData, sizeof(myData));
-  Serial.print("Bytes received: ");
-  Serial.println(len);
+  //Serial.print("Bytes received: ");
+  //Serial.println(len);
   incoming_string = myData.a;
 
   // checking if the transmitter ready for getting the data 
-  if(myData.send_data)
-    readFile(SPIFFS, "/saved_data.txt");
-
+  if(myData.send_data){
+    start_sending_data = true;
+//    readFile(SPIFFS, "/saved_data.txt");
+//    //Serial.println("start sending data");
+  }
   // checking starting or stopping saving data
   if(myData.save_data)
     start_saving_data= true;
@@ -61,7 +64,7 @@ void setup_wifi()
 
   // Init ESP-NOW
   if (esp_now_init() != ESP_OK) {
-    Serial.println("Error initializing ESP-NOW");
+    //Serial.println("Error initializing ESP-NOW");
     return;
   }
 
@@ -76,7 +79,7 @@ void setup_wifi()
   
   // Add peer        
   if (esp_now_add_peer(&peerInfo) != ESP_OK){
-    Serial.println("Failed to add peer");
+    //Serial.println("Failed to add peer");
     return;
   }
   esp_now_register_recv_cb(OnDataRecv);
@@ -93,10 +96,10 @@ void send(String data) {
   esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &myData, sizeof(myData));
    
   if (result == ESP_OK) {
-    Serial.println("Sent with success");
+    //Serial.println("Sent with success");
   }
   else {
-    Serial.println("Error sending the data");
+    //Serial.println("Error sending the data");
   }
   delay(100);
 }

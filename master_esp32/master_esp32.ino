@@ -8,7 +8,7 @@ uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 // Structure example to receive data
 // Must match the sender structure
 typedef struct struct_message {
-  char a[32]; // will be used for sending the data
+  char a[55]; // will be used for sending the data
   bool send_data; // will be used for requesting the data
   bool save_data; // will be used for requesting stating saving the data and stopping it
 } struct_message;
@@ -71,6 +71,7 @@ void loop() {
     if(Serial.available())
     {
         String CMD = Serial.readString();
+        Serial.println(CMD);
         if(CMD == "Start")
             send(false,true);
         else if(CMD == "Stop")
@@ -79,7 +80,6 @@ void loop() {
             send(true,false);
         
     }
-
 }
 void send(bool send_data_CMD,bool save_data_CMD) {
   // Set values to send
